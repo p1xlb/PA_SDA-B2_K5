@@ -1,2 +1,0 @@
-Catalog ID,Product Name,Type,Size,Price
-1,Meja Hijau,Meja,3x3,340000
