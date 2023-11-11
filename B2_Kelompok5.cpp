@@ -1,11 +1,9 @@
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <string>
 #include <queue>
 #include <limits>
-#include <cstdlib>
-#include <type_traits>
 
 using namespace std;
 using std::istringstream;
@@ -55,6 +53,7 @@ public:
             cin.get();
         }
     }
+
 
     // Funsgi untuk mencari data suatu User
     User* findUser(const string& username) {
@@ -897,9 +896,9 @@ int main() {
                 loggedInUser = userList.findUser(username);
                 if (loggedInUser && loggedInUser->password == password) {
                     cout << "Login successful!\n";
+                    system(CLEAR);
                     if (loggedInUser->isAdmin) { // Menu jika yang login admin (Menu Awal Admin)
                         do {
-                            system(CLEAR);
                             cout << "Admin Menu:\n";
                             cout << "1. Manajemen Katalog\n";
                             cout << "2. Manajemen Pesanan Toko\n";
@@ -929,7 +928,7 @@ int main() {
                                             int harga;
                                             system(CLEAR);
                                             cout << "ID Produk: ";
-                                            while(!(cin >> id)){cin.clear();cin.ignore();cout << "Masukkan Hanya Angka\nID Produk: ";}
+                                            while(!(cin >> id)){cin.clear();cin.ignore(numeric_limits<streamsize>::max(), '\n');cout << "Masukkan Hanya Angka\nID Produk: ";}
                                             cout << "Nama Produk: "; cin.ignore();
                                             getline(cin, nama);
                                             cout << "Tipe Produk: "; 
@@ -995,6 +994,7 @@ int main() {
                                         }
                                         else if (adminChoice == "6"){ // Kembali ke Menu Utama
                                             cout << "Kembali ke Menu Utama.\n";
+                                            system(CLEAR);
                                             loop1 = false;
                                         }
                                         else {
@@ -1014,9 +1014,7 @@ int main() {
                                     cout << "1. Tampilkan Pesanan\n";
                                     cout << "2. Proses Pesanan\n";
                                     cout << "3. Selesaikan Pesanan\n";
-                                    cout << "4. Hapus Produk\n";
-                                    cout << "5. Simpan Katalog ke File\n";
-                                    cout << "6. Kembali ke Menu Utama\n";
+                                    cout << "4. Kembali ke Menu Utama\n";
                                     cout << "Pilih aksi: ";
                                     string adminChoice2;
                                     cin >> adminChoice2;
@@ -1057,7 +1055,7 @@ int main() {
                                         }
                                         else if(choice == "N" || choice == "n"){
                                             cout << "Kembali ke Menu Utama.\n";
-                                            
+                                            system(CLEAR);
                                         }
                                         else{
                                             system(CLEAR);
@@ -1065,9 +1063,11 @@ int main() {
                                             cin.get();
                                     }
                                     }
-                                    else if(adminChoice2 == "6"){ // Kembali ke Menu Utama
+                                    else if(adminChoice2 == "4"){ // Kembali ke Menu Utama
                                         cout << "Kembali ke Menu Utama.\n";
+                                        system(CLEAR);
                                         loop1 = false;
+                                        
                                     }
                                     else { // Error Handling Menu
                                         system(CLEAR);
@@ -1080,13 +1080,14 @@ int main() {
                                 case 3: // Menu Data User
                                     system(CLEAR);
                                     userList.listNonAdminUsers();
+                                    cin.get();
                                     break;                                    
                                 case 4: // Logout
                                     system(CLEAR);
                                     cout << "Logged out as Admin.\n";
                                     cin.get();
                                     loggedInUser = nullptr;
-                                    break;    
+                                    break;     
                                 default: // Error Handling Menu
                                     system(CLEAR);
                                     cout << "Invalid choice. Please try again.\n";
@@ -1126,7 +1127,7 @@ int main() {
                                     else if(userChoice2 == "2"){ // Mencari Furnitur berdasarkan jenisnya
                                         string type;
                                         system(CLEAR);
-                                        cout << "Masukkan Jenis: ";
+                                        cout << "Masukkan Jenis: "; cin.ignore();
                                         getline(cin, type);
                                         catalog.searchByType(type);
                                         cin.get();
@@ -1173,14 +1174,14 @@ int main() {
                                     FurnitureItem* selectedItem = catalog.findItemByID(catalogId);
                                     if (selectedItem) {
                                         if (loggedInUser) {
-                                            int choiceconfirm;
+                                            string choiceconfirm;
                                             cout << "Anda yakin ingin memesan " << selectedItem->prod_name << "? (Y/N): ";
                                             cin >> choiceconfirm;
-                                            if(choiceconfirm == 1){
+                                            if(choiceconfirm == "Y"){
                                                 orderManager.placeOrder(selectedItem->prod_name, loggedInUser->username, loggedInUser->phoneNumber, "Pending", selectedItem->price);
                                                 orderManager.saveOrdersToCSV("order_history.csv");
                                             }
-                                            else if(choiceconfirm == 0){
+                                            else if(choiceconfirm == "N"){
                                                 cout << "Kembali ke Menu Utama.\n";
                                             }
                                             else{
